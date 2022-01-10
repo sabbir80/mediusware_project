@@ -83,20 +83,24 @@ class ProductView(generic.TemplateView):
         products = Product.objects.prefetch_related("variant_price", "variant_price__product_variant_one__variant",
                                                     "variant_price__product_variant_two__variant",
                                                     "variant_price__product_variant_three__variant").all()
-        print(products)
         if title:
             products = products.filter(title__icontains=title)
+            print(products.query)
+
         if variant:
             products = products.filter(variants__variant_title__icontains=variant)
+            print(products.query)
+
         if price_from and price_to:
             products = products.filter(variant_price__price__gte=float(price_from),
                                        variant_price__price__lte=float(price_to)).distinct()
-        product_total = len(products)
+            print(products.query)
+
         if date:
             date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
             products = products.filter(created_date=date)
         print(products.query)
-        variants = Variant.objects.order_by("title").values("productvariant__variant_title", "title").annotate(cnt=Count("productvariant__variant_title")).prefetch_related("productvariant")
+        variants = Variant.objects.order_by("title").values("product_variant__variant_title", "title").annotate(cnt=Count("product_variant__variant_title")).prefetch_related("product_variant")
         print(variants.query)
 
         variants_data = {}
@@ -130,15 +134,12 @@ class ProductEditView(View):
         # variants = product.prefetch_related("variants").variants.all()
         variants_stock = []
         variants_price = []
-        variants_price = product.first().variant_price.all()
+        variant_price = product.first().variant_price.all()
         variants_price_obj = []
-        for vp in variants_price:
+        for vp in variant_price:
             variants_stock.append(vp.stock)
             variants_price.append(vp.price)
-            # variants_price.append(vp.price)
-            # variants_price[vp] = vp.stock
-        # print(variants_stock)
-        # print(variants_price)
+
         p_variants = product.first().variants.all()
         variants = Variant.objects.filter(active=True).values('id', 'title')
         context = {
