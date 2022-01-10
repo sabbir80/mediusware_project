@@ -6,12 +6,16 @@ class Variant(models.Model):
     title = models.CharField(max_length=40)
     description = models.TextField()
     active = models.BooleanField(default=True)
+    def __str__(self):
+        return self.title
 
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
     sku = models.SlugField(max_length=255)
     description = models.TextField()
+    created_date = models.DateTimeField(auto_now=True, blank=True)
+
 
 
 class ProductImage(models.Model):
