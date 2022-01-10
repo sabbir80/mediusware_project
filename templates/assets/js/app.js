@@ -6,6 +6,7 @@ window.Vue = Vue
 window.axios = require('axios');
 
 Vue.component('create-product', require('./components/product/CreateProduct.vue').default)
+Vue.component('edit-product', require('./components/product/EditProduct.vue').default)
 
 const app = new Vue({
     el: '#app'
