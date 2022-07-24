@@ -24,7 +24,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Media</h6>
           </div>
           <div class="card-body border">
-            <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
+            <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" @vdropzone-complete="afterComplete"></vue-dropzone>
           </div>
         </div>
       </div>
@@ -166,6 +166,11 @@ export default {
       })
     },
 
+    afterComplete(file) {
+      console.log('hello there I am here');
+      console.log(file);
+    },
+
     // combination algorithm
     getCombn(arr, pre) {
       pre = pre || '';
@@ -189,6 +194,7 @@ export default {
         product_variant: this.product_variant,
         product_variant_prices: this.product_variant_prices
       }
+      console.log(product)
 
 
       axios.post('/product/create-api/', product).then(response => {
@@ -196,7 +202,7 @@ export default {
       }).catch(error => {
         console.log(error);
       })
-      window.location.href = "/product/list"
+      // window.location.href = "/product/list"
 
       console.log(product);
     }

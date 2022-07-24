@@ -16,6 +16,9 @@ class Product(models.Model):
     description = models.TextField()
     created_date = models.DateTimeField(auto_now=True, blank=True)
 
+    def __str__(self):
+        return self.title
+
 
 
 class ProductImage(models.Model):
@@ -27,6 +30,9 @@ class ProductVariant(models.Model):
     variant_title = models.CharField(max_length=255)
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE,related_name="product_variant")
     product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="variants")
+
+    def __str__(self):
+        return self.variant_title
 
 
 class ProductVariantPrice(models.Model):

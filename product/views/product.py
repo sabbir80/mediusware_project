@@ -32,6 +32,7 @@ class CreateProductAPIView(View):
 
     def post(self, *args, **kwargs):
         data = json.loads(self.request.body)
+        print(data)
         product_data = {
             "title": data.get("title", None),
             "sku": data.get("sku", None),
@@ -85,24 +86,18 @@ class ProductView(generic.TemplateView):
                                                     "variant_price__product_variant_three__variant").all()
         if title:
             products = products.filter(title__icontains=title)
-            print(products.query)
 
         if variant:
             products = products.filter(variants__variant_title__icontains=variant)
-            print(products.query)
 
         if price_from and price_to:
             products = products.filter(variant_price__price__gte=float(price_from),
                                        variant_price__price__lte=float(price_to)).distinct()
-            print(products.query)
 
         if date:
             date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
             products = products.filter(created_date=date)
-        print(products.query)
         variants = Variant.objects.order_by("title").values("product_variant__variant_title", "title").annotate(cnt=Count("product_variant__variant_title")).prefetch_related("product_variant")
-        print(variants.query)
-
         variants_data = {}
         for variant in variants:
             key = variant.get("title")
@@ -111,6 +106,7 @@ class ProductView(generic.TemplateView):
                 variants_data[key].append(value)
             else:
                 variants_data[key] = [value]
+
         paginator = Paginator(products, 10)
         page_number = self.request.GET.get("page", 1)
         page_obj = paginator.get_page(page_number)
